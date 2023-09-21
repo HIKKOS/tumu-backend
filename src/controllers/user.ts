@@ -1,29 +1,8 @@
 import { User } from "../models/user";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "../services/prisma_client";
 export const getAll = async (): Promise<Object> => {
   const users: User[] = (await prisma.users.findMany()) || [];
   const count: number = await prisma.users.count();
-  /* const users: User[] = [
-    {
-      id: 1,
-      firstName: "Juan",
-      lastName: "Perez",
-      email: "email",
-      password: "password",
-      phone: "phone",
-      rolId: 1,
-    },
-    {
-      id: 2,
-      firstName: "Pedro",
-      lastName: "Ku",
-      email: "email",
-      password: "password",
-      phone: "phone",
-      rolId: 2,
-    },
-  ]; */
   return { count, users };
 };
 export const getById = async (id: number): Promise<User> => {
@@ -33,4 +12,16 @@ export const getById = async (id: number): Promise<User> => {
     },
   })) as User;
   return user;
+};
+export const create = async (user: User): Promise<Object> => {
+  const newUser: User = await prisma.users.create({
+    data: {
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      password: user.password,
+      phone: user.phone,
+    },
+  });
+  return { msg: "Usuario creado correctamente", id: newUser.id };
 };
