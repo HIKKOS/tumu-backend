@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Rols {
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(75)
+  status Boolean @default(true)
+  user   Users[]
+}
+
+model Categories {
+  id       Int        @id @default(autoincrement())
+  name     String     @db.VarChar(75)
+  status   Boolean    @default(true)
+  products Products[]
+}
+
+model Users {
+  id        Int       @id @default(autoincrement())
+  firstName String    @db.VarChar(75)
+  lastName  String    @db.VarChar(75)
+  email     String    @unique @db.VarChar(255)
+  password  String    @db.VarChar(255)
+  phone     String    @unique @db.VarChar(20)
+  status    Boolean   @default(true)
+  tickets   Tickets[]
+  rolId     Int
+  rol       Rols      @relation(fields: [rolId], references: [id])
+}
+
+model Products {
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(75)
+  price       Decimal    @db.Decimal(10, 2)
+  stock       Int        @default(0) @db.Integer
+  categoryId  Int
+  description String?    @db.VarChar(255)
+  image       String?    @db.VarChar(255)
+  status      Boolean    @default(true)
+  category    Categories @relation(fields: [categoryId], references: [id])
+}
+
+model Tickets {
+  folio     Int      @id @default(autoincrement())
+  userId    Int
+  total     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  status    Boolean  @default(true)
+  user      Users    @relation(fields: [userId], references: [id])
+}
