@@ -6,42 +6,42 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model Roles {
-  id     Int     @id @default(autoincrement())
-  name   String  @db.VarChar(75)
-  status Boolean @default(true)
-  users  Users[]
+  id      Int     @id @default(autoincrement())
+  rolName String  @db.VarChar(75)
+  status  Boolean @default(true)
+  Users   Users[]
 }
 
 model Categories {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(75)
-  status   Boolean    @default(true)
-  products Products[]
+  id           Int        @id @default(autoincrement())
+  categoryName String     @db.VarChar(75)
+  status       Boolean    @default(true)
+  products     Products[]
 }
 
 model Users {
-  id        Int       @id @default(autoincrement())
-  firstName String    @db.VarChar(75)
-  lastName  String    @db.VarChar(75)
-  email     String    @unique @db.VarChar(255)
-  password  String    @db.VarChar(255)
-  phone     String    @unique @db.VarChar(20)
-  status    Boolean   @default(true)
-  tickets   Tickets[]
-  rolId     Int       @default(2)
-  rol       Roles     @relation(fields: [rolId], references: [id])
+  id           Int       @id @default(autoincrement())
+  firstName    String    @db.VarChar(75)
+  lastName     String    @db.VarChar(75)
+  email        String    @unique @db.VarChar(255)
+  userPassword String    @db.VarChar(255)
+  phone        String    @unique @db.VarChar(20)
+  status       Boolean   @default(true)
+  tickets      Tickets[]
+  rolId        Int       @default(2)
+  rol          Roles     @relation(fields: [rolId], references: [id])
 }
 
 model Products {
   id          Int        @id @default(autoincrement())
-  name        String     @db.VarChar(75)
+  productName String     @db.VarChar(75)
   price       Decimal    @db.Decimal(10, 2)
-  stock       Int        @default(0) @db.Integer
+  stock       Int        @default(0) @db.Int
   categoryId  Int
   description String?    @db.VarChar(255)
   image       String?    @db.VarChar(255)
