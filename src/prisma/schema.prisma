@@ -34,7 +34,7 @@ model Users {
   status       Boolean   @default(true)
   tickets      Tickets[]
   rolId        Int       @default(2)
-  rol          Roles     @relation(fields: [rolId], references: [id])
+  role         Roles     @relation(fields: [rolId], references: [id])
 }
 
 model Products {

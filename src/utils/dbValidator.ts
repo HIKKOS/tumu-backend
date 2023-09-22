@@ -1,4 +1,5 @@
 import prisma from "../services/prisma_client";
+/**checks if the email exist */
 export const existEmail = async (email: string): Promise<boolean> => {
   const user = await prisma.users.findFirst({
     where: {
@@ -10,6 +11,21 @@ export const existEmail = async (email: string): Promise<boolean> => {
   });
   if (user) {
     throw new Error(`el correo ${email} ya esta registrado`);
+  }
+  return true;
+};
+/**checks if the phone number exist */
+export const existPhone = async (phone: string): Promise<boolean> => {
+  const user = await prisma.users.findFirst({
+    where: {
+      phone: phone,
+      AND: {
+        status: true,
+      },
+    },
+  });
+  if (user) {
+    throw new Error(`el número telefónico ${phone} ya esta registrado`);
   }
   return true;
 };

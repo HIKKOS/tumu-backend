@@ -8,15 +8,13 @@ import {
 } from "../controllers/user";
 import { check } from "express-validator";
 import { validateFields } from "../middlewares/validateFields";
-import { existEmail, existUser } from "../utils/dbValidator";
+import { existEmail, existPhone, existUser } from "../utils/dbValidator";
 import { userRequiredFields } from "../middlewares/userRequiredFields";
+import { validatePagination } from "../middlewares/validatePagination";
 
 const router = Express.Router();
-router.get(
-  "/",
+router.get("/", validatePagination, getAll);
 
-  getAll
-);
 router.get(
   "/:id",
   [
@@ -29,7 +27,12 @@ router.get(
 
 router.post(
   "/",
-  [...userRequiredFields, check("email").custom(existEmail), validateFields],
+  [
+    ...userRequiredFields,
+    check("phone").custom(existPhone),
+    check("email").custom(existEmail),
+    validateFields,
+  ],
   createUser
 );
 router.put("/:id", [check("id").custom(existUser), validateFields], updateUser);

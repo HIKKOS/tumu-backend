@@ -1,11 +1,34 @@
 import { Request, Response } from "express";
+import { encryptPassword } from "../utils/bycript";
 import { User } from "../models/user";
 import prisma from "../services/prisma_client";
-export const getAll = async (_: Request, res: Response): Promise<Response> => {
+const select = {
+  id: true,
+  firstName: true,
+  lastName: true,
+  email: true,
+  phone: true,
+  role: true,
+  status: true,
+  rolId: false,
+  userPassword: false,
+};
+
+export const getAll = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { limit = "5", page = "1" } = req.query;
   const users: User[] = await prisma.users.findMany({
     where: { status: true },
+    skip: Number(page) - 1,
+    take: Number(limit),
+    select,
   });
-  const count: number = await prisma.users.count({ where: { status: true } });
+
+  const count: number = await prisma.users.count({
+    where: { status: true },
+  });
   return res.json({ count, users });
 };
 export const getUser = async (
@@ -14,11 +37,13 @@ export const getUser = async (
 ): Promise<Response> => {
   const id = parseInt(req.params.id);
 
-  const user: User = (await prisma.users.findUnique({
+  const user: User | null = await prisma.users.findUnique({
     where: {
       id: id,
     },
-  })) as User;
+    select,
+  });
+
   return res.json(user);
 };
 export const createUser = async (
@@ -32,7 +57,7 @@ export const createUser = async (
         email: body.email,
         firstName: body.firstName,
         lastName: body.lastName,
-        userPassword: body.password,
+        userPassword: encryptPassword(body.password),
         phone: body.phone,
       },
     });
@@ -52,17 +77,20 @@ export const updateUser = async (
     const { params, body } = req;
     const oldUser: User | null = await prisma.users.findUnique({
       where: { id: parseInt(params.id) },
+      include: { role: true },
     });
     const newUser: User = await prisma.users.update({
       where: {
         id: parseInt(params.id),
       },
+      include: { role: true },
       data: {
         email: body.email || oldUser!.email,
         firstName: body.firstName || oldUser!.firstName,
         lastName: body.lastName || oldUser!.lastName,
         userPassword: body.password || oldUser!.userPassword,
         phone: body.phone || oldUser!.phone,
+        role: body.role || oldUser!.role,
       },
     });
     return res.json({
