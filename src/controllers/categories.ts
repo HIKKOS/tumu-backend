@@ -4,13 +4,13 @@ import IController from "../interfaces/controllers/api_rest_int";
 import Category from "../@types/category";
 
 class CategoryController implements IController {
-  private static instance: CategoryController;
+  static #instance: CategoryController;
   private constructor() {}
   public static getInstance(): CategoryController {
-    if (!CategoryController.instance) {
-      CategoryController.instance = new CategoryController();
+    if (!CategoryController.#instance) {
+      CategoryController.#instance = new CategoryController();
     }
-    return CategoryController.instance;
+    return CategoryController.#instance;
   }
 
   public async post(req: Request, res: Response): Promise<Response> {

@@ -2,17 +2,16 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 export default class Server {
-  private app: express.Application;
-  private port: string | undefined;
-  private paths = {
+  #app: express.Application;
+  #port: string | undefined;
+  #paths = {
     users: "/api/users",
     categories: "/api/categories",
   };
   constructor() {
-    this.app = express();
-    this.app.use(express.json());
-    console.log(process.env.PORT || "qwq");
-    this.port = process.env.PORT;
+    this.#app = express();
+    this.#app.use(express.json());
+    this.#port = process.env.PORT;
     //Middlewares
     this.middlewares();
     //rutas de mi apliacion
@@ -23,19 +22,19 @@ export default class Server {
 
   middlewares() {
     //directorio publico
-    this.app.use(express.static("public"));
+    this.#app.use(express.static("public"));
     //cors
-    this.app.use(cors());
+    this.#app.use(cors());
     //lectura y parse del body
-    this.app.use(express.json());
+    this.#app.use(express.json());
   }
   routes() {
-    this.app.use(this.paths.users, require("../routes/user"));
-    this.app.use(this.paths.categories, require("../routes/categories"));
+    this.#app.use(this.#paths.users, require("../routes/user"));
+    this.#app.use(this.#paths.categories, require("../routes/categories"));
   }
   listen() {
-    this.app.listen(this.port, () => {
-      console.log(`escuchando en el puerto: ${this.port}`);
+    this.#app.listen(this.#port, () => {
+      console.log(`escuchando en el puerto: ${this.#port}`);
     });
   }
 }

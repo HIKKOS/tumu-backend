@@ -3,18 +3,18 @@ const prisma = new PrismaClient();
 
 export default prisma;
 export class PrismaConector {
-  private static instance: PrismaConector;
-  private prisma: PrismaClient;
+  static #instance: PrismaConector;
+  #prisma: PrismaClient;
   private constructor() {
-    this.prisma = new PrismaClient();
+    this.#prisma = new PrismaClient();
   }
   public static getInstance(): PrismaConector {
-    if (!PrismaConector.instance) {
-      PrismaConector.instance = new PrismaConector();
+    if (!PrismaConector.#instance) {
+      PrismaConector.#instance = new PrismaConector();
     }
-    return PrismaConector.instance;
+    return PrismaConector.#instance;
   }
   public getPrisma(): PrismaClient {
-    return this.prisma;
+    return this.#prisma;
   }
 }

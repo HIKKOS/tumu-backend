@@ -16,13 +16,13 @@ const select = {
 };
 
 class UserController implements IController {
-  private static instance: UserController;
+  static #instance: UserController;
   private constructor() {}
   public static getInstance(): UserController {
-    if (!UserController.instance) {
-      UserController.instance = new UserController();
+    if (!UserController.#instance) {
+      UserController.#instance = new UserController();
     }
-    return UserController.instance;
+    return UserController.#instance;
   }
 
   public async post(req: Request, res: Response): Promise<Response> {
@@ -66,7 +66,6 @@ class UserController implements IController {
         take: Number(limit),
         select,
       });
-
       const count: number = await prisma.users.count({
         where: { status: true },
       });
