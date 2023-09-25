@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
 export default interface IController {
-  readAll: (req: Request, res: Response) => Promise<any>;
-  create: (req: Request, res: Response) => Promise<any>;
-  read: (req: Request, res: Response) => Promise<any>;
-  update: (req: Request, res: Response) => Promise<any>;
+  getAll: (req: Request, res: Response) => Promise<any>;
+  post: (req: Request, res: Response) => Promise<any>;
+  get: (req: Request, res: Response) => Promise<any>;
+  put: (req: Request, res: Response) => Promise<any>;
   delete: (req: Request, res: Response) => Promise<any>;
 }

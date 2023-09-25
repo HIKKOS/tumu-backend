@@ -9,7 +9,7 @@ import {
 import { existEmail, existPhone, existUser } from "../utils/dbValidator";
 
 const router = Express.Router();
-router.get("/", [validatePagination, validateFields], userController.readAll);
+router.get("/", [validatePagination, validateFields], userController.getAll);
 
 router.get(
   "/:id",
@@ -18,7 +18,7 @@ router.get(
     check("id").custom(existUser),
     validateFields,
   ],
-  userController.readAll
+  userController.get
 );
 
 router.post(
@@ -29,12 +29,12 @@ router.post(
     check("email").custom(existEmail),
     validateFields,
   ],
-  userController.create
+  userController.post
 );
 router.put(
   "/:id",
   [check("id").custom(existUser), validateFields],
-  userController.update
+  userController.put
 );
 router.delete(
   "/:id",

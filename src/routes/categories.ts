@@ -7,20 +7,20 @@ const router = Express.Router();
 router.get(
   "/",
   [validatePagination, validateFields],
-  categoryController.readAll
+  categoryController.getAll
 );
 
 router.get(
   "/:id",
   [check("id", "el id debe ser numerico").isNumeric(), validateFields],
-  categoryController.readAll
+  categoryController.getAll
 );
 
-router.post("/", [validateFields], categoryController.create);
+router.post("/", [validateFields], categoryController.post);
 router.put(
   "/:id",
 
-  categoryController.update
+  categoryController.put
 );
 router.delete(
   "/:id",

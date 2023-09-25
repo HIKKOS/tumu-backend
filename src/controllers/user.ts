@@ -25,7 +25,7 @@ class UserController implements IController {
     return UserController.instance;
   }
 
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async post(req: Request, res: Response): Promise<Response> {
     try {
       const { body } = req;
       const newUser: User = await prisma.users.create({
@@ -45,7 +45,7 @@ class UserController implements IController {
       return res.status(500).json({ code: 500, msg: error });
     }
   }
-  public async read(req: Request, res: Response): Promise<Response> {
+  public async get(req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id);
 
     const user: User | null = await prisma.users.findUnique({
@@ -57,7 +57,7 @@ class UserController implements IController {
 
     return res.json(user);
   }
-  public async readAll(req: Request, res: Response): Promise<Response> {
+  public async getAll(req: Request, res: Response): Promise<Response> {
     const { limit = "5", page = "1" } = req.query;
     try {
       const users: User[] = await prisma.users.findMany({
@@ -76,7 +76,7 @@ class UserController implements IController {
       return res.status(500).json({ code: 500, msg: error });
     }
   }
-  public async update(req: Request, res: Response): Promise<Response> {
+  public async put(req: Request, res: Response): Promise<Response> {
     try {
       const { params, body } = req;
       const oldUser: User | null = await prisma.users.findUnique({
@@ -94,7 +94,6 @@ class UserController implements IController {
           lastName: body.lastName || oldUser!.lastName,
           userPassword: body.password || oldUser!.userPassword,
           phone: body.phone || oldUser!.phone,
-          role: body.role || oldUser!.role,
         },
       });
       return res.json({

@@ -1,4 +1,4 @@
 import Server from "./models/server";
 import "dotenv/config";
-const server = new Server();
-server.listen();
+const app = new Server();
+app.listen();

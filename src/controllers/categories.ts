@@ -13,7 +13,7 @@ class CategoryController implements IController {
     return CategoryController.instance;
   }
 
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async post(req: Request, res: Response): Promise<Response> {
     try {
       const { body } = req;
       const newCategory: Category = await prisma.categories.create({
@@ -29,7 +29,7 @@ class CategoryController implements IController {
       return res.status(500).json({ code: 500, msg: error });
     }
   }
-  public async read(req: Request, res: Response): Promise<Response> {
+  public async get(req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id);
     const category: Category | null = await prisma.categories.findUnique({
       where: {
@@ -39,7 +39,7 @@ class CategoryController implements IController {
 
     return res.json(category);
   }
-  public async readAll(req: Request, res: Response): Promise<Response> {
+  public async getAll(req: Request, res: Response): Promise<Response> {
     const { limit = "5", page = "1" } = req.query;
     const count = await prisma.categories.count({ where: { status: true } });
     const categories = await prisma.categories.findMany({
@@ -52,7 +52,7 @@ class CategoryController implements IController {
       categories: categories,
     });
   }
-  public async update(req: Request, res: Response): Promise<Response> {
+  public async put(req: Request, res: Response): Promise<Response> {
     try {
       const { params, body } = req;
       const oldCategory: Category | null = await prisma.categories.findUnique({
