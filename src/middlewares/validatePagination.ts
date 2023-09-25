@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-export const validatePagination = (
+const validatePagination = (
   req: Request,
   res: Response,
   next: Function
@@ -22,3 +22,4 @@ export const validatePagination = (
   req.query.page = page;
   return next();
 };
+export default validatePagination;

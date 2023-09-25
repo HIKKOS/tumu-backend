@@ -3,7 +3,7 @@ import { check } from "express-validator";
 /** Fields that are required for create
  *  a new user
  *  [ firstName, lastName, phone, email, password ]*/
-export const userRequiredFields = [
+const userRequiredFields = [
   check("firstName", "no debe ser vacio").notEmpty(),
   check("lastName", "no debe ser vacio").notEmpty(),
   check("phone", "debe ser de almenos 10 digitos y numerico")
@@ -13,3 +13,4 @@ export const userRequiredFields = [
 
   check("password", "deben ser minimo 8 caracteres").isLength({ min: 8 }),
 ];
+export default userRequiredFields;

@@ -1,10 +1,12 @@
 import Express from "express";
 import userController from "../controllers/user";
 import { check } from "express-validator";
-import { validateFields } from "../middlewares/validateFields";
+import {
+  validateFields,
+  userRequiredFields,
+  validatePagination,
+} from "../middlewares/index";
 import { existEmail, existPhone, existUser } from "../utils/dbValidator";
-import { userRequiredFields } from "../middlewares/userRequiredFields";
-import { validatePagination } from "../middlewares/validatePagination";
 
 const router = Express.Router();
 router.get("/", [validatePagination, validateFields], userController.readAll);

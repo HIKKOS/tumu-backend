@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import Encrypter from "../utils/bycript";
-import User from "../models/user";
 import prisma from "../services/prisma_client";
 import IController from "../interfaces/controllers/api_rest_int";
+import User from "../@types/user";
 const select = {
   id: true,
   firstName: true,
@@ -28,7 +28,6 @@ class UserController implements IController {
   public async create(req: Request, res: Response): Promise<Response> {
     try {
       const { body } = req;
-      const newUser2 = new User();
       const newUser: User = await prisma.users.create({
         data: {
           email: body.email,
@@ -60,17 +59,22 @@ class UserController implements IController {
   }
   public async readAll(req: Request, res: Response): Promise<Response> {
     const { limit = "5", page = "1" } = req.query;
-    const users: User[] = await prisma.users.findMany({
-      where: { status: true },
-      skip: Number(page) - 1,
-      take: Number(limit),
-      select,
-    });
+    try {
+      const users: User[] = await prisma.users.findMany({
+        where: { status: true },
+        skip: Number(page) - 1,
+        take: Number(limit),
+        select,
+      });
 
-    const count: number = await prisma.users.count({
-      where: { status: true },
-    });
-    return res.json({ count, users });
+      const count: number = await prisma.users.count({
+        where: { status: true },
+      });
+      return res.json({ count, users });
+    } catch (error: any) {
+      console.log(error);
+      return res.status(500).json({ code: 500, msg: error });
+    }
   }
   public async update(req: Request, res: Response): Promise<Response> {
     try {
