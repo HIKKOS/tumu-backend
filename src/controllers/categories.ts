@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../services/prisma_client";
-import IController from "../interfaces/controllers/api_rest_int";
+import IController from "../interfaces/controller";
 import Category from "../@types/category";
 
 class CategoryController implements IController {

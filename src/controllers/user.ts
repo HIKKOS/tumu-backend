@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Encrypter from "../utils/bycript";
 import prisma from "../services/prisma_client";
-import IController from "../interfaces/controllers/api_rest_int";
+import IController from "../interfaces/controller";
 import User from "../@types/user";
 const select = {
   id: true,

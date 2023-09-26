@@ -13,11 +13,7 @@ router.get("/", [validatePagination, validateFields], userController.getAll);
 
 router.get(
   "/:id",
-  [
-    check("id", "el id debe ser numerico").isNumeric(),
-    check("id").custom(existUser),
-    validateFields,
-  ],
+  [check("id").custom(existUser), validateFields],
   userController.get
 );
 

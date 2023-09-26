@@ -10,9 +10,10 @@ export class PrismaConector {
   }
   public static getInstance(): PrismaConector {
     if (!PrismaConector.#instance) {
-      PrismaConector.#instance = new PrismaConector();
+      this.#instance = new PrismaConector();
     }
-    return PrismaConector.#instance;
+    this.#instance;
+    return this.#instance;
   }
   public getPrisma(): PrismaClient {
     return this.#prisma;
