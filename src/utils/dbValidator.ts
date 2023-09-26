@@ -12,7 +12,7 @@ export const existEntity = async (
     case entities.categories:
       return await existCategory(id);
     case entities.users:
-      return await existUser(id);
+      return await existUserId(id);
     default:
       throw new Error(`el tipo ${type} no es valido`);
   }
@@ -48,9 +48,7 @@ export const existPhone = async (phone: string): Promise<boolean> => {
   return true;
 };
 /**checks if the user exist by finding its id  */
-export const existUser = async (id: number): Promise<boolean> => {
-  //! no bota el error
-
+export const existUserId = async (id: number): Promise<boolean> => {
   if (isNaN(id)) {
     throw new Error(`el id debe ser numericossss`);
   }
@@ -66,6 +64,20 @@ export const existUser = async (id: number): Promise<boolean> => {
     throw new Error(`no existe el usuario con id: ${id}`);
   }
   return true;
+};
+export const existUserEmail = async (email: string): Promise<boolean> => {
+  const user = await prisma.users.findFirst({
+    where: {
+      email,
+      AND: {
+        status: true,
+      },
+    },
+  });
+  if (user) {
+    return true;
+  }
+  throw new Error(`no existe el correo: ${email}`);
 };
 export const existCategory = async (id: number): Promise<boolean> => {
   if (isNaN(id)) {
