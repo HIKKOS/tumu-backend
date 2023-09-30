@@ -5,7 +5,7 @@ export interface Ticket{
     folio:number;
     userId:number;
     total:Decimal;
-    createAt:Date;
+    createdAt:Date;
     status:boolean;
     user?:User | null;
     copyWith?(user: Ticket): Ticket;
