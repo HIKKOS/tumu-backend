@@ -7,6 +7,7 @@ export default class Server {
   #paths = {
     users: "/api/users",
     categories: "/api/categories",
+    products: "/api/products"
   };
   constructor() {
     this.#app = express();
@@ -31,6 +32,7 @@ export default class Server {
   routes() {
     this.#app.use(this.#paths.users, require("../routes/user"));
     this.#app.use(this.#paths.categories, require("../routes/categories"));
+    this.#app.use(this.#paths.products, require("../routes/products"));
   }
   listen() {
     this.#app.listen(this.#port, () => {
