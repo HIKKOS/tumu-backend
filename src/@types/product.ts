@@ -1,9 +1,10 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import  Category  from "./category";
 
 export interface Product {
   id: number;
   productName: string;
-  price: number;
+  price: Decimal;
   stock: number;
   categoryId: number;
   description: string;

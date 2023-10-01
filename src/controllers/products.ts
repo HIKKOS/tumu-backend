@@ -49,7 +49,7 @@ class ProductController implements IController{
     public async get(req:Request,res:Response): Promise<Response>{
         const id = parseInt(req.params.id);
 
-        const product= await prisma.products.findUnique({
+        const product = await prisma.products.findUnique({
             where: {
               id: id,
             },
