@@ -9,6 +9,8 @@ export default class Server {
     categories: "/api/categories",
     auth: "/api/login",
     uploads: "/api/uploads",
+    products: "/api/products",
+    tickets: "/api/ticket"
   };
   constructor() {
     this.#app = express();
@@ -35,6 +37,8 @@ export default class Server {
     this.#app.use(this.#paths.categories, require("../routes/categories"));
     this.#app.use(this.#paths.uploads, require("../routes/uploads"));
     this.#app.use(this.#paths.users, require("../routes/user"));
+    this.#app.use(this.#paths.products, require("../routes/products"));
+    this.#app.use(this.#paths.tickets, require("../routes/ticket"));
   }
   listen() {
     this.#app.listen(this.#port, () => {
