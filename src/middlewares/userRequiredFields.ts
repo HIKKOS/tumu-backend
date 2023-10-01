@@ -11,6 +11,6 @@ const userRequiredFields = [
     .isNumeric(),
   check("email", "No tiene el formato de un correo").isEmail(),
 
-  check("password", "deben ser minimo 8 caracteres").isLength({ min: 8 }),
+  check("userPassword", "deben ser minimo 8 caracteres").isLength({ min: 8 }),
 ];
 export default userRequiredFields;

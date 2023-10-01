@@ -7,6 +7,8 @@ export default class Server {
   #paths = {
     users: "/api/users",
     categories: "/api/categories",
+    products: "/api/products",
+    tickets: "/api/ticket",
     auth: "/api/login",
     uploads: "/api/uploads",
   };
@@ -33,8 +35,8 @@ export default class Server {
   routes() {
     this.#app.use(this.#paths.auth, require("../routes/auth"));
     this.#app.use(this.#paths.categories, require("../routes/categories"));
-    this.#app.use(this.#paths.uploads, require("../routes/uploads"));
-    this.#app.use(this.#paths.users, require("../routes/user"));
+    this.#app.use(this.#paths.products, require("../routes/products"));
+    this.#app.use(this.#paths.tickets, require("../routes/ticket"));
   }
   listen() {
     this.#app.listen(this.#port, () => {

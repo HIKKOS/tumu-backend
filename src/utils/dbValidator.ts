@@ -1,7 +1,9 @@
+import { Ticket } from "../@types/ticket";
 import prisma from "../services/prisma_client";
 const enum entities {
   categories = "categories",
   users = "users",
+  product = "products"
 }
 
 export const existEntity = async (
@@ -96,3 +98,46 @@ export const existCategory = async (id: number): Promise<boolean> => {
   }
   return true;
 };
+
+export const existProduct= async (id: number): Promise<boolean>=>{
+  if(isNaN(id)){
+    throw new Error(`el id debe ser numerico`);
+
+  }
+
+  const product = await prisma.products.findFirst({
+    where:{
+      id:Number(id),
+      AND:{
+        status:true
+      }
+    }
+  });
+
+  if(!product){
+    throw new Error(`No existe el producto con ID: ${id}`)
+  }
+  return true
+}
+
+export const existTicket = async (id:number): Promise<boolean> =>{
+  if(isNaN(id)){
+    throw new Error(`el id debe ser numerico`);
+
+  };
+
+  const ticket: Ticket | null = await prisma.tickets.findFirst({
+    where:{
+      folio:Number(id),
+      AND:{
+        status:true
+      }
+    }
+  });
+
+  if(!ticket){
+    throw new Error(`El ticket con folio ${id}`)
+  }
+
+  return true
+}
