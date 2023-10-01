@@ -10,8 +10,12 @@ import {
 import { existEmail, existPhone, existUserId } from "../utils/dbValidator";
 
 const router = Express.Router();
-router.use(validateJWT);
-router.get("/", [validatePagination], userController.getAll);
+
+router.get(
+  "/",
+  [validatePagination,validateJWT, validateFields],
+  userController.getAll
+);
 
 router.get(
   "/:id",

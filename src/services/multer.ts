@@ -2,7 +2,7 @@ import { Request } from "express";
 import multer from "multer";
 import path from "path";
 const storage = multer.diskStorage({
-  destination: "uploads",
+  destination: path.join("src/uploads"),
   filename: (_req, file, cb) => {
     const datetimestamp = Date.now();
     const name =
