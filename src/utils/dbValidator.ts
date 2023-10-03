@@ -3,7 +3,7 @@ import prisma from "../services/prisma_client";
 const enum entities {
   categories = "categories",
   users = "users",
-  product = "products"
+  product = "products",
 }
 
 export const existEntity = async (
@@ -34,8 +34,10 @@ export const existEmail = async (email: string): Promise<boolean> => {
   }
   return true;
 };
+
 /**checks if the phone number exist */
 export const existPhone = async (phone: string): Promise<boolean> => {
+  console.log(phone);
   const user = await prisma.users.findFirst({
     where: {
       phone: phone,
@@ -45,8 +47,10 @@ export const existPhone = async (phone: string): Promise<boolean> => {
     },
   });
   if (user) {
+    console.log("si existe");
     throw new Error(`el número telefónico ${phone} ya esta registrado`);
   }
+  console.log("noexiste");
   return true;
 };
 /**checks if the user exist by finding its id  */
@@ -99,45 +103,43 @@ export const existCategory = async (id: number): Promise<boolean> => {
   return true;
 };
 
-export const existProduct= async (id: number): Promise<boolean>=>{
-  if(isNaN(id)){
+export const existProduct = async (id: number): Promise<boolean> => {
+  if (isNaN(id)) {
     throw new Error(`el id debe ser numerico`);
-
   }
 
   const product = await prisma.products.findFirst({
-    where:{
-      id:Number(id),
-      AND:{
-        status:true
-      }
-    }
+    where: {
+      id: Number(id),
+      AND: {
+        status: true,
+      },
+    },
   });
 
-  if(!product){
-    throw new Error(`No existe el producto con ID: ${id}`)
+  if (!product) {
+    throw new Error(`No existe el producto con ID: ${id}`);
   }
-  return true
-}
+  return true;
+};
 
-export const existTicket = async (id:number): Promise<boolean> =>{
-  if(isNaN(id)){
+export const existTicket = async (id: number): Promise<boolean> => {
+  if (isNaN(id)) {
     throw new Error(`el id debe ser numerico`);
-
-  };
+  }
 
   const ticket: Ticket | null = await prisma.tickets.findFirst({
-    where:{
-      folio:Number(id),
-      AND:{
-        status:true
-      }
-    }
+    where: {
+      folio: Number(id),
+      AND: {
+        status: true,
+      },
+    },
   });
 
-  if(!ticket){
-    throw new Error(`El ticket con folio ${id}`)
+  if (!ticket) {
+    throw new Error(`El ticket con folio ${id}`);
   }
 
-  return true
-}
+  return true;
+};

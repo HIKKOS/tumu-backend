@@ -6,9 +6,8 @@ export async function validateJWT(
   res: Response,
   next: Function
 ): Promise<Response | Function> {
-  console.log("validateJWT");
   const token = req.header("x-token");
-  console.log(token);
+
   if (!token) {
     return res.status(401).json({
       msg: "no hay token en la peticion",
@@ -18,7 +17,6 @@ export async function validateJWT(
     jwt.verify(token, process.env.SECRETORPRIVATEKEY!);
     return next();
   } catch (error) {
-    console.log(error);
     if (error === jwt.TokenExpiredError) {
       return res.status(401).json({
         msg: "expiro el JWT",

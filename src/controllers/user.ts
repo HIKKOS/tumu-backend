@@ -28,12 +28,13 @@ class UserController implements IController {
   public async post(req: Request, res: Response): Promise<Response> {
     try {
       const { body } = req;
+
       const newUser: User = await prisma.users.create({
         data: {
           email: body.email,
           firstName: body.firstName,
           lastName: body.lastName,
-          userPassword:  Encrypter.encryptPassword(body.password),
+          userPassword: Encrypter.encryptPassword(body.password),
           phone: body.phone,
         },
       });

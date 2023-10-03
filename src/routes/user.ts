@@ -13,7 +13,7 @@ const router = Express.Router();
 
 router.get(
   "/",
-  [validatePagination,validateJWT, validateFields],
+  [validatePagination, validateJWT, validateFields],
   userController.getAll
 );
 
@@ -29,6 +29,7 @@ router.post(
     ...userRequiredFields,
     check("phone").custom(existPhone),
     check("email").custom(existEmail),
+    validateFields,
   ],
   userController.post
 );

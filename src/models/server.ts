@@ -1,4 +1,5 @@
 import express from "express";
+import morgan from "morgan";
 import cors from "cors";
 import "dotenv/config";
 export default class Server {
@@ -15,6 +16,7 @@ export default class Server {
   constructor() {
     this.#app = express();
     this.#app.use(express.json());
+    this.#app.use(morgan("dev"));
     this.#port = process.env.PORT;
     //Middlewares
     this.middlewares();
@@ -34,6 +36,8 @@ export default class Server {
   }
   routes() {
     this.#app.use(this.#paths.auth, require("../routes/auth"));
+    this.#app.use(this.#paths.uploads, require("../routes/uploads"));
+    this.#app.use(this.#paths.users, require("../routes/user"));
     this.#app.use(this.#paths.categories, require("../routes/categories"));
     this.#app.use(this.#paths.products, require("../routes/products"));
     this.#app.use(this.#paths.tickets, require("../routes/ticket"));
