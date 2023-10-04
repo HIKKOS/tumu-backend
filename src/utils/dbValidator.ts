@@ -1,20 +1,18 @@
 import { Ticket } from "../@types/ticket";
 import prisma from "../services/prisma_client";
-const enum entities {
-  categories = "categories",
-  users = "users",
-  product = "products",
-}
+import { Entities } from "./enums";
 
 export const existEntity = async (
   id: number,
-  type: entities
+  type: Entities
 ): Promise<boolean> => {
   switch (type) {
-    case entities.categories:
+    case Entities.categories:
       return await existCategory(id);
-    case entities.users:
+    case Entities.users:
       return await existUserId(id);
+    case Entities.products:
+      return await existProduct(id);
     default:
       throw new Error(`el tipo ${type} no es valido`);
   }
@@ -98,7 +96,7 @@ export const existCategory = async (id: number): Promise<boolean> => {
     },
   });
   if (!category) {
-    throw new Error(`no existe el usuario con id: ${id}`);
+    throw new Error(`no existe la categoría con id: ${id}`);
   }
   return true;
 };
