@@ -64,6 +64,7 @@ model ImagesPaths {
   productoId Int
   path       String
   producto   Products @relation(fields: [productoId], references: [id], map: "ImgPaths_ServicioId_fkey")
+  status     Boolean  @default(true)
 
   @@index([productoId], map: "ImgPaths_ServicioId_fkey")
 }

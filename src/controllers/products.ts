@@ -2,20 +2,6 @@ import { Request, Response } from "express";
 import IController from "../interfaces/controller";
 import prisma from "../services/prisma_client";
 import { Product } from "../@types/product";
-import path from "path";
-//import { Product } from "../@types/product";
-
-/* const select = {
-  id: true,
-  productName: true,
-  price: true,
-  stock: true,
-  categoryId: true,
-  description: true,
-
-  status: true,
-  category: true,
-}; */
 
 class ProductController implements IController {
   static #instance: ProductController;
@@ -41,12 +27,14 @@ class ProductController implements IController {
           images:{
             select:{
               path:true
-            }
+            } 
+            //TODO: buscar status true en imagenes
           }
         }
       });
+      const fullUrl = req.protocol + '://' + req.get('host');
       const products: Product[] = result.map((product) => {
-        return ({...product,images:product.images.map((image)=>(path.join('scr',"uploads","products",`${product.id}`,`${image.path}`)))})
+        return ({...product,images:product.images.map((image)=>(`${fullUrl}/api/uploads/products/${product.id}/${image.path}`))})
       });
 
       const count: number = await prisma.products.count({

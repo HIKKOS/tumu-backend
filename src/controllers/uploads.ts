@@ -22,7 +22,7 @@ export const createPhoto = async (
     if (!req.file) {
       return res.status(400).json({ error: "no file" });
     }
-    return res.json({ message: "Photo created2" });
+    return res.json({ message: "Photo created" });
   });
 };
 export const getPhoto = async (
