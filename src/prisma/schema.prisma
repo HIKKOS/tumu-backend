@@ -38,15 +38,16 @@ model Users {
 }
 
 model Products {
-  id          Int        @id @default(autoincrement())
-  productName String     @db.VarChar(75)
-  price       Decimal    @db.Decimal(10, 2)
-  stock       Int        @default(0) @db.Int
+  id          Int           @id @default(autoincrement())
+  productName String        @db.VarChar(75)
+  price       Decimal       @db.Decimal(10, 2)
+  stock       Int           @default(0) @db.Int
   categoryId  Int
-  description String?    @db.VarChar(255)
-  image       String?    @db.VarChar(255)
-  status      Boolean    @default(true)
-  category    Categories @relation(fields: [categoryId], references: [id])
+  description String?       @db.VarChar(255)
+  image       String?       @db.VarChar(255)
+  status      Boolean       @default(true)
+  images      ImagesPaths[]
+  category    Categories    @relation(fields: [categoryId], references: [id])
 }
 
 model Tickets {
@@ -56,4 +57,13 @@ model Tickets {
   createdAt DateTime @default(now()) @db.Timestamp(6)
   status    Boolean  @default(true)
   user      Users    @relation(fields: [userId], references: [id])
+}
+
+model ImagesPaths {
+  id         Int      @id @default(autoincrement())
+  productoId Int
+  path       String
+  producto   Products @relation(fields: [productoId], references: [id], map: "ImgPaths_ServicioId_fkey")
+
+  @@index([productoId], map: "ImgPaths_ServicioId_fkey")
 }

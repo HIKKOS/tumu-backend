@@ -1,18 +1,21 @@
 import { Request, Response } from "express";
 import IController from "../interfaces/controller";
 import prisma from "../services/prisma_client";
+import { Product } from "../@types/product";
+import path from "path";
+//import { Product } from "../@types/product";
 
-const select = {
+/* const select = {
   id: true,
   productName: true,
   price: true,
   stock: true,
   categoryId: true,
   description: true,
-  image: true,
+
   status: true,
   category: true,
-};
+}; */
 
 class ProductController implements IController {
   static #instance: ProductController;
@@ -29,12 +32,23 @@ class ProductController implements IController {
     const { limit = "5", page = "1" } = req.query;
 
     try {
-      const products = await prisma.products.findMany({
+      const result = await prisma.products.findMany({
         where: { status: true },
         skip: Number(page) - 1,
         take: Number(limit),
-        select,
+        include:{
+          category:true,
+          images:{
+            select:{
+              path:true
+            }
+          }
+        }
       });
+      const products: Product[] = result.map((product) => {
+        return ({...product,images:product.images.map((image)=>(path.join('scr',"uploads","products",`${product.id}`,`${image.path}`)))})
+      });
+
       const count: number = await prisma.products.count({
         where: { status: true },
       });
@@ -48,11 +62,19 @@ class ProductController implements IController {
   public async get(req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id);
 
-    const product = await prisma.products.findUnique({
+    const product: any = await prisma.products.findUnique({
       where: {
         id: id,
-      },
-      select,
+      }/* ,include:{
+        images:{
+          select:{
+            id:true,
+            productoId:true,
+            path:true
+          }
+        }
+      } */
+      
     });
     console.log(product);
 
