@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import IController from "../interfaces/controller";
 import prisma from "../services/prisma_client";
+import { Product } from "../@types/product";
+
 
 const select = {
   id: true,
@@ -29,7 +31,7 @@ class ProductController implements IController {
     const { limit = "5", page = "1" } = req.query;
 
     try {
-      const products = await prisma.products.findMany({
+      const products:Product[]  = await prisma.products.findMany({
         where: { status: true },
         skip: Number(page) - 1,
         take: Number(limit),
@@ -48,7 +50,7 @@ class ProductController implements IController {
   public async get(req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id);
 
-    const product = await prisma.products.findUnique({
+    const product: Product | null = await prisma.products.findUnique({
       where: {
         id: id,
       },
@@ -62,7 +64,7 @@ class ProductController implements IController {
   public async post(req: Request, res: Response): Promise<Response> {
     try {
       const { body } = req;
-      const newProduct = await prisma.products.create({
+      const newProduct: Product = await prisma.products.create({
         data: {
           productName: body.productName,
           price: body.price,
@@ -85,7 +87,7 @@ class ProductController implements IController {
   public async put(req: Request, res: Response): Promise<Response> {
     try {
       const { params, body } = req;
-      const oldProduct = await prisma.products.findUnique({
+      const oldProduct:Product | null = await prisma.products.findUnique({
         where: { id: parseInt(params.id) },
       });
 

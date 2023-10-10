@@ -7,8 +7,8 @@ export interface Product {
   price: Decimal;
   stock: number;
   categoryId: number;
-  description: string;
-  image: string;
+  description: string|null;
+  image: string|null;
   status: boolean;
-  category: Category;
+  category?: Category|null;
 }

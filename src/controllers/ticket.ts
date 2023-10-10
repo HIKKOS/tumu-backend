@@ -9,8 +9,9 @@ const select = {
     userId: true,
     total: true,
     createdAt: true,
-    status: true,
-    user: true,
+    status: false,
+    user: false,
+    products:true
 }
 
 class TicketController implements IController {
@@ -41,12 +42,14 @@ class TicketController implements IController {
                 select
             });
 
+
             const count: number = await prisma.tickets.count({
                 where: { status: true },
             });
 
             return res.json({ count, ticket })
-        } catch (error) {
+        } catch (error:any) {
+            console.log(error)
             return res.status(500).json({ code: 500, msg: error })
         }
     }

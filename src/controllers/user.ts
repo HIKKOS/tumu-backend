@@ -34,7 +34,7 @@ class UserController implements IController {
           email: body.email,
           firstName: body.firstName,
           lastName: body.lastName,
-          userPassword: Encrypter.encryptPassword(body.password),
+          userPassword:  Encrypter.encryptPassword(body.userPassword),
           phone: body.phone,
         },
       });
