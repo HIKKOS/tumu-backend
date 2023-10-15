@@ -80,7 +80,7 @@ class ProductController implements IController {
           description: body.description,
 
           categoryId: body.categoryId,
-          image: body.image,
+          images: body.image,
         },
       });
       return res.json({
@@ -110,7 +110,7 @@ class ProductController implements IController {
           description: body.description || oldProduct!.description,
           status: body.status || oldProduct!.status,
           categoryId: body.categoryId || oldProduct!.categoryId,
-          image: body.imageUrl || oldProduct!.image,
+          images: body.imageUrl || oldProduct!.images,
         },
       });
 

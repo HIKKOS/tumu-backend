@@ -44,7 +44,6 @@ model Products {
   stock       Int           @default(0) @db.Int
   categoryId  Int
   description String?       @db.VarChar(255)
-  image       String?       @db.VarChar(255)
   status      Boolean       @default(true)
   images      ImagesPaths[]
   category    Categories    @relation(fields: [categoryId], references: [id])
