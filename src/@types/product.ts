@@ -8,7 +8,7 @@ export interface Product {
   stock: number;
   categoryId: number;
   description: string|null;
-  image: string|null;
+  image: string[];
   status: boolean;
   category?: Category|null;
 }
