@@ -3,6 +3,19 @@ import IController from "../interfaces/controller";
 import prisma from "../services/prisma_client";
 import { Product } from "../@types/product";
 
+
+const select = {
+  id: true,
+  productName: true,
+  price: true,
+  stock: true,
+  categoryId: true,
+  description: true,
+  image: true,
+  status: true,
+  category: true,
+};
+
 class ProductController implements IController {
   static #instance: ProductController;
   private constructor() {}
@@ -72,7 +85,7 @@ class ProductController implements IController {
   public async post(req: Request, res: Response): Promise<Response> {
     try {
       const { body } = req;
-      const newProduct = await prisma.products.create({
+      const newProduct: Product = await prisma.products.create({
         data: {
           productName: body.productName,
           price: body.price,
@@ -95,7 +108,7 @@ class ProductController implements IController {
   public async put(req: Request, res: Response): Promise<Response> {
     try {
       const { params, body } = req;
-      const oldProduct = await prisma.products.findUnique({
+      const oldProduct:Product | null = await prisma.products.findUnique({
         where: { id: parseInt(params.id) },
       });
 
