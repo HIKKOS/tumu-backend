@@ -3,3 +3,8 @@ export const enum Entities {
   users = "users",
   products = "products",
 }
+
+export const enum Roles {
+  user = "USER_ROLE",
+  admin = "ADMIN_ROLE",
+}

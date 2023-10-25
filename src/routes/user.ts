@@ -7,7 +7,13 @@ import {
   userRequiredFields,
   validatePagination,
 } from "../middlewares/index";
-import { existEmail, existPhone, existUserId } from "../utils/dbValidator";
+import {
+  existEmail,
+  existPhone,
+  existRoleId,
+  existUserId,
+} from "../utils/dbValidator";
+import { validateAdminRole } from "../middlewares/validateRole";
 
 const router = Express.Router();
 
@@ -42,6 +48,18 @@ router.delete(
   "/:id",
   [check("id").custom(existUserId), validateFields],
   userController.delete
+);
+router.put(
+  "/change/:id",
+  [
+    validateJWT,
+    validateFields,
+    check("id").custom(existUserId),
+    check("roleId").custom(existRoleId),
+    validateAdminRole,
+    validateFields,
+  ],
+  userController.changeRol
 );
 
 module.exports = router;

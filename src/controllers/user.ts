@@ -34,7 +34,7 @@ class UserController implements IController {
           email: body.email,
           firstName: body.firstName,
           lastName: body.lastName,
-          userPassword:  Encrypter.encryptPassword(body.userPassword),
+          userPassword: Encrypter.encryptPassword(body.userPassword),
           phone: body.phone,
         },
       });
@@ -115,6 +115,25 @@ class UserController implements IController {
       });
       return res.json({
         msg: `Se elimino el usuario con id ${id}`,
+      });
+    } catch (error: any) {
+      console.log(error);
+      return res.status(500).json({ code: 500, msg: error });
+    }
+  }
+  public async changeRol(req: Request, res: Response): Promise<Response> {
+    try {
+      const { id } = req.params;
+      const { roleId } = req.body;
+
+      await prisma.users.update({
+        where: { id: parseInt(id) },
+        data: {
+          rolId: parseInt(roleId),
+        },
+      });
+      return res.json({
+        msg: `Se cambio el rol de usuario con id ${id}`,
       });
     } catch (error: any) {
       console.log(error);

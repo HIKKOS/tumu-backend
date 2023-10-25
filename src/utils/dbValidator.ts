@@ -69,6 +69,23 @@ export const existUserId = async (id: number): Promise<boolean> => {
   }
   return true;
 };
+export const existRoleId = async (id: number): Promise<boolean> => {
+  if (isNaN(id)) {
+    throw new Error(`el id debe ser numericossss`);
+  }
+  const role = await prisma.roles.findFirst({
+    where: {
+      id: Number(id),
+      AND: {
+        status: true,
+      },
+    },
+  });
+  if (!role) {
+    throw new Error(`no existe el role con id: ${id}`);
+  }
+  return true;
+};
 export const existUserEmail = async (email: string): Promise<boolean> => {
   const user = await prisma.users.findFirst({
     where: {

@@ -15,6 +15,7 @@ export async function validateJWT(
   }
   try {
     jwt.verify(token, process.env.SECRETORPRIVATEKEY!);
+
     return next();
   } catch (error) {
     if (error === jwt.TokenExpiredError) {

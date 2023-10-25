@@ -3,19 +3,6 @@ import IController from "../interfaces/controller";
 import prisma from "../services/prisma_client";
 import { Product } from "../@types/product";
 
-
-const select = {
-  id: true,
-  productName: true,
-  price: true,
-  stock: true,
-  categoryId: true,
-  description: true,
-  image: true,
-  status: true,
-  category: true,
-};
-
 class ProductController implements IController {
   static #instance: ProductController;
   private constructor() {}
@@ -35,19 +22,25 @@ class ProductController implements IController {
         where: { status: true },
         skip: Number(page) - 1,
         take: Number(limit),
-        include:{
-          category:true,
-          images:{
-            select:{
-              path:true
-            } 
+        include: {
+          category: true,
+          images: {
+            select: {
+              path: true,
+            },
             //TODO: buscar status true en imagenes
-          }
-        }
+          },
+        },
       });
-      const fullUrl = req.protocol + '://' + req.get('host');
+      const fullUrl = req.protocol + "://" + req.get("host");
       const products: Product[] = result.map((product) => {
-        return ({...product,images:product.images.map((image)=>(`${fullUrl}/api/uploads/products/${product.id}/${image.path}`))})
+        return {
+          ...product,
+          images: product.images.map(
+            (image) =>
+              `${fullUrl}/api/uploads/products/${product.id}/${image.path}`
+          ),
+        };
       });
 
       const count: number = await prisma.products.count({
@@ -66,16 +59,16 @@ class ProductController implements IController {
     const product: any = await prisma.products.findUnique({
       where: {
         id: id,
-      }/* ,include:{
-        images:{
-          select:{
-            id:true,
-            productoId:true,
-            path:true
-          }
-        }
-      } */
-      
+      },
+      include: {
+        images: {
+          select: {
+            id: true,
+            productoId: true,
+            path: true,
+          },
+        },
+      },
     });
     console.log(product);
 
@@ -85,7 +78,7 @@ class ProductController implements IController {
   public async post(req: Request, res: Response): Promise<Response> {
     try {
       const { body } = req;
-      const newProduct= await prisma.products.create({
+      const newProduct = await prisma.products.create({
         data: {
           productName: body.productName,
           price: body.price,
@@ -108,7 +101,7 @@ class ProductController implements IController {
   public async put(req: Request, res: Response): Promise<Response> {
     try {
       const { params, body } = req;
-      const oldProduct = await prisma.products.findUnique({
+      const oldProduct: any = await prisma.products.findUnique({
         where: { id: parseInt(params.id) },
       });
 
@@ -123,7 +116,7 @@ class ProductController implements IController {
           description: body.description || oldProduct!.description,
           status: body.status || oldProduct!.status,
           categoryId: body.categoryId || oldProduct!.categoryId,
-          images: body.imageUrl || oldProduct!.image,
+          images: body.imageUrl || oldProduct!.images,
         },
       });
 
