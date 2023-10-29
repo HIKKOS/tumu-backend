@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
+import fs from "fs";
 import path from "path";
 import MulterHandler from "../services/multer";
 import { dirname } from "path";
+import prisma from "../services/prisma_client";
 
 export const createPhoto = async (
   req: Request,
@@ -47,4 +49,34 @@ export const getPhoto = async (
   } catch (error) {
     return res.status(404).json({ error: "not found" });
   }
+};
+export const deletePhoto = async (
+  req: Request,
+  res: Response
+): Promise<Response | void> => {
+  const { photoName, productId, itemName } = req.params;
+  const appDir: string | undefined = dirname(require?.main!.filename);
+  const imagePath = path.join(
+    appDir,
+    "uploads",
+    itemName,
+    productId,
+    photoName
+  );
+  console.log(`${imagePath}`);
+  if (fs.existsSync(`${imagePath}`)) {
+    fs.unlinkSync(`${imagePath}`);
+  } else {
+    return res.json({ message: "no existe" });
+  }
+  await prisma.imagesPaths.updateMany({
+    where: {
+      path: photoName,
+    },
+    data: {
+      status: false,
+    },
+  });
+
+  return res.json({ message: "Photo deleted" });
 };

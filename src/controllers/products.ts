@@ -78,6 +78,7 @@ class ProductController implements IController {
   public async post(req: Request, res: Response): Promise<Response> {
     try {
       const { body } = req;
+      const { images } = body;
       const newProduct = await prisma.products.create({
         data: {
           productName: body.productName,
@@ -86,7 +87,7 @@ class ProductController implements IController {
           description: body.description,
 
           categoryId: body.categoryId,
-          images: body.image,
+          images: images || undefined,
         },
       });
       return res.json({
@@ -139,6 +140,13 @@ class ProductController implements IController {
           status: false,
         },
       });
+      await prisma.imagesPaths.updateMany({
+        where: { productoId: parseInt(id) },
+        data: {
+          status: false,
+        },
+      });
+
       return res.status(204).json({
         msg: `Se elimino produccto el usuario con id${id}`,
       });

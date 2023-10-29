@@ -3,6 +3,7 @@ import productsController from "../controllers/products";
 import { check } from "express-validator";
 import { validateFields, validatePagination } from "../middlewares/index";
 import { existProduct } from "../utils/dbValidator";
+import { validateAdminRole } from "../middlewares/validateRole";
 
 const router = Express.Router();
 
@@ -14,7 +15,7 @@ router.get(
 
 router.get(
   "/:id",
-  [check("id").custom(existProduct), validateFields],
+  [check("id").custom(existProduct), validateAdminRole, validateFields],
   productsController.get
 );
 

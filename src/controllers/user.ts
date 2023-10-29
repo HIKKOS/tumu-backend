@@ -140,5 +140,19 @@ class UserController implements IController {
       return res.status(500).json({ code: 500, msg: error });
     }
   }
+  public async getRoles(req: Request, res: Response): Promise<Response> {
+    try {
+      const { limit = "5", page = "1" } = req.query;
+      const roles = await prisma.roles.findMany({
+        skip: Number(page) - 1,
+        take: Number(limit),
+      });
+      const count = await prisma.roles.count();
+      return res.json({ count, roles });
+    } catch (error: any) {
+      console.log(error);
+      return res.status(500).json({ code: 500, msg: error });
+    }
+  }
 }
 export default UserController.getInstance();

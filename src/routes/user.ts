@@ -1,7 +1,8 @@
 import Express from "express";
 import userController from "../controllers/user";
 import { check } from "express-validator";
-import { validateJWT } from "../middlewares/validateJwt";
+//import { validateJWT } from "../middlewares/validateJwt";
+//import { validateAdminRole } from "../middlewares/validateRole";
 import {
   validateFields,
   userRequiredFields,
@@ -13,14 +14,14 @@ import {
   existRoleId,
   existUserId,
 } from "../utils/dbValidator";
-import { validateAdminRole } from "../middlewares/validateRole";
 
 const router = Express.Router();
 
+router.get("/", [validatePagination, validateFields], userController.getAll);
 router.get(
-  "/",
-  [validatePagination, validateJWT, validateFields],
-  userController.getAll
+  "/roles",
+  [validatePagination, validateFields],
+  userController.getRoles
 );
 
 router.get(
@@ -52,11 +53,11 @@ router.delete(
 router.put(
   "/change/:id",
   [
-    validateJWT,
-    validateFields,
+    //validateJWT,
+    //validateFields,
     check("id").custom(existUserId),
     check("roleId").custom(existRoleId),
-    validateAdminRole,
+    //validateAdminRole,
     validateFields,
   ],
   userController.changeRol

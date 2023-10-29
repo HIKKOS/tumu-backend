@@ -158,3 +158,15 @@ export const existTicket = async (id: number): Promise<boolean> => {
 
   return true;
 };
+
+export const existImage = async (photoName: string): Promise<boolean> => {
+  const result = await prisma.imagesPaths.findFirst({
+    where: {
+      path: photoName,
+    },
+  });
+  if (!result) {
+    throw new Error(`${photoName} not found`);
+  }
+  return true;
+};
