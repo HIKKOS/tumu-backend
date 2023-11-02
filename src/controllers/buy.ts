@@ -1,12 +1,13 @@
 import { Prisma, ProductTicket } from "@prisma/client";
 import prisma from "../services/prisma_client";
-import { Response, request } from "express";
+import { Response, Request } from "express";
+
 
 class BuyController {
 
     static #instance : BuyController;
 
-    private constructor(){}
+    constructor(){}
 
     public static getInstance(): BuyController{
         if(!BuyController.#instance){
@@ -20,37 +21,80 @@ class BuyController {
         try {
             await prisma.$transaction(async (ts)=>{
                 
-                const { userId , products }= req.body;
+                const { userId, products } = req.body;
 
                 let precioTotal: number= 0;
 
                 for(const product of products){
-                    const {cantidad, price, productId}= product;
+                    const {amount, price, productId}= product;
+                    console.log(amount)
 
-                    precioTotal+=cantidad*price;
+                    precioTotal+=amount*price;
 
-                    await BuyController.#instance.discountAmount(productId, precioTotal,ts)
+                    await BuyController.getInstance().discountAmount(productId, amount,ts);
                 }
 
-                const newTicket = await ts.tickets.create({
+                await ts.tickets.create({
                     data:{
                         userId:userId,
                         createdAt: new Date(),
                         status:true,
-                        products: products.map((product:ProductTicket) => {
-                            productId: product.productId,
-                            
-                        })
+                        products: {
+                            createMany: {
+                                data: products.map((product: ProductTicket) => ({
+                                  productId: product.productId,
+                                  productName: product.productName,
+                                  amount: product.amount,
+                                  price: product.price,
+                                })),
+                              },
+                        },
+                        total: precioTotal
+
                     }
                 })
-            })
+            });
+            return res.status(200).json({
+                code: 200,
+                msg: 'Solicitud procesada correctamente.',
+              });
         } catch (error:any) {
-            
+            return res.status(500).json({
+                code: 500,
+                msg: error.message || 'Ha ocurrido un error interno.',
+              });
         }
     }
 
     public async discountAmount(productId: number, cantidad: number, ts: Prisma.TransactionClient){
+        try {
+            const product: any = await prisma.products.findUnique({
+                where: {
+                    id: productId,
+                },
+            });
+            
+            console.log(product)
+            if (!product) {
+                throw new Error("Producto no encontrado");
+            }
 
+            const {stock}= product;
+    
+            const newStock = stock - cantidad;
+    
+            await ts.products.update({
+                where: {
+                    id: productId,
+                },
+                data: {
+                    stock: newStock
+                }
+            });
+        } catch (error) {
+            // Maneja el error, puedes registrarlo o lanzarlo más arriba en la pila de llamadas.
+            throw error;
+        }
     }
 
 

@@ -50,9 +50,11 @@ model Products {
 }
 
 model ProductTicket {
-  productId    Int      @id
+  id Int @id @default(autoincrement())
+  productId    Int
   productName  String   @db.VarChar(75)
-  price        Decimal  @db.Decimal(10, 2)
+  amount    Int
+  price        Int
   Tickets      Tickets? @relation(fields: [ticketsFolio], references: [folio])
   ticketsFolio Int?
 }
