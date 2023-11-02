@@ -74,12 +74,15 @@ class BuyController {
                 },
             });
             
-            console.log(product)
             if (!product) {
                 throw new Error("Producto no encontrado");
             }
 
             const {stock}= product;
+
+            if(stock ==0 || cantidad > stock){
+                throw new Error(`product ${productId} no disponible`);
+            }
     
             const newStock = stock - cantidad;
     
@@ -92,7 +95,7 @@ class BuyController {
                 }
             });
         } catch (error) {
-            // Maneja el error, puedes registrarlo o lanzarlo más arriba en la pila de llamadas.
+        
             throw error;
         }
     }
