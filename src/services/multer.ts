@@ -1,8 +1,9 @@
 import { Request } from "express";
 import multer from "multer";
+import prisma from "../services/prisma_client";
 import path from "path";
+
 export default class MulterHandler {
-  static #instance: multer.Multer | undefined;
   static #destination = path.join("src/uploads");
   static #fileFilter = (
     _req: Request,
@@ -18,20 +19,7 @@ export default class MulterHandler {
     cb(null, true);
   };
   private constructor() {}
-  public static getInstace(): multer.Multer {
-    if (!this.#instance) {
-      this.#instance = multer({
-        storage: multer.diskStorage({
-          destination: this.#destination,
-          filename: (_req, file, cb) => {
-            cb(null, this.buildFileName(file));
-          },
-        }),
-        fileFilter: this.#fileFilter,
-      });
-    }
-    return this.#instance;
-  }
+
   private static buildFileName(file: Express.Multer.File): string {
     const datetimestamp = Date.now();
     const name =
@@ -43,19 +31,30 @@ export default class MulterHandler {
     return name;
   }
   private static upload(itemId: number, folderName: string): multer.Multer {
-    return multer({
+    let fileName = "";
+    const multerObj = multer({
       storage: multer.diskStorage({
         destination: path.join(
           this.#destination,
           folderName,
           itemId.toString()
         ),
-        filename: (_req, file, cb) => {
-          cb(null, `${this.buildFileName(file)}`);
+        filename: async (_req, file, cb)  =>  {
+          fileName = this.buildFileName(file);
+          await prisma.imagesPaths.create({
+            data: {
+              path: fileName,
+              productoId: itemId,
+            },
+          });
+          cb(null, fileName);
         },
       }),
       fileFilter: this.#fileFilter,
     });
+     
+   
+    return multerObj;
   }
   public static single(field: string, folderName: string, itemId: number) {
     return this.upload(itemId, folderName).single(field);

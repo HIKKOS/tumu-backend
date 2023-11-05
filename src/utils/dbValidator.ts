@@ -69,6 +69,23 @@ export const existUserId = async (id: number): Promise<boolean> => {
   }
   return true;
 };
+export const existRoleId = async (id: number): Promise<boolean> => {
+  if (isNaN(id)) {
+    throw new Error(`el id debe ser numericossss`);
+  }
+  const role = await prisma.roles.findFirst({
+    where: {
+      id: Number(id),
+      AND: {
+        status: true,
+      },
+    },
+  });
+  if (!role) {
+    throw new Error(`no existe el role con id: ${id}`);
+  }
+  return true;
+};
 export const existUserEmail = async (email: string): Promise<boolean> => {
   const user = await prisma.users.findFirst({
     where: {
@@ -139,5 +156,17 @@ export const existTicket = async (id: number): Promise<boolean> => {
     throw new Error(`El ticket con folio ${id}`);
   }
 
+  return true;
+};
+
+export const existImage = async (photoName: string): Promise<boolean> => {
+  const result = await prisma.imagesPaths.findFirst({
+    where: {
+      path: photoName,
+    },
+  });
+  if (!result) {
+    throw new Error(`${photoName} not found`);
+  }
   return true;
 };

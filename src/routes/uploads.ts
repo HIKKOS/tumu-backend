@@ -1,7 +1,7 @@
 import Express from "express";
 import { check } from "express-validator";
-import { createPhoto, getPhoto } from "../controllers/uploads";
-import { existEntity } from "../utils/dbValidator";
+import { createPhoto, getPhoto, deletePhoto } from "../controllers/uploads";
+import { existEntity, existImage, existProduct } from "../utils/dbValidator";
 import { Entities } from "../utils/enums";
 import { validateFields } from "../middlewares";
 
@@ -23,5 +23,16 @@ router.get(
     validateFields,
   ],
   getPhoto
+);
+router.delete(
+  "/:itemName/:productId/:photoName",
+  [
+    check("itemName").isIn(["products"]),
+    check("photoName").custom(existImage),
+    check("productId").custom(existProduct),
+
+    validateFields,
+  ],
+  deletePhoto
 );
 module.exports = router;

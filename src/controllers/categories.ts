@@ -55,6 +55,7 @@ class CategoryController implements IController {
   public async put(req: Request, res: Response): Promise<Response> {
     try {
       const { params, body } = req;
+      console.log({ params, body });
       const oldCategory: Category | null = await prisma.categories.findUnique({
         where: { id: parseInt(params.id) },
       });

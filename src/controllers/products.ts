@@ -3,19 +3,6 @@ import IController from "../interfaces/controller";
 import prisma from "../services/prisma_client";
 import { Product } from "../@types/product";
 
-
-const select = {
-  id: true,
-  productName: true,
-  price: true,
-  stock: true,
-  categoryId: true,
-  description: true,
-  image: true,
-  status: true,
-  category: true,
-};
-
 class ProductController implements IController {
   static #instance: ProductController;
   private constructor() {}
@@ -31,12 +18,31 @@ class ProductController implements IController {
     const { limit = "5", page = "1" } = req.query;
 
     try {
-      const products:Product[]  = await prisma.products.findMany({
+      const result = await prisma.products.findMany({
         where: { status: true },
         skip: Number(page) - 1,
         take: Number(limit),
-        select,
+        include: {
+          category: true,
+          images: {
+            select: {
+              path: true,
+            },
+            //TODO: buscar status true en imagenes
+          },
+        },
       });
+      const fullUrl = req.protocol + "://" + req.get("host");
+      const products: Product[] = result.map((product) => {
+        return {
+          ...product,
+          images: product.images.map(
+            (image) =>
+              `${fullUrl}/api/uploads/products/${product.id}/${image.path}`
+          ),
+        };
+      });
+
       const count: number = await prisma.products.count({
         where: { status: true },
       });
@@ -50,11 +56,19 @@ class ProductController implements IController {
   public async get(req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id);
 
-    const product: Product | null = await prisma.products.findUnique({
+    const product: any = await prisma.products.findUnique({
       where: {
         id: id,
       },
-      select,
+      include: {
+        images: {
+          select: {
+            id: true,
+            productoId: true,
+            path: true,
+          },
+        },
+      },
     });
     console.log(product);
 
@@ -64,7 +78,8 @@ class ProductController implements IController {
   public async post(req: Request, res: Response): Promise<Response> {
     try {
       const { body } = req;
-      const newProduct: Product = await prisma.products.create({
+      const { images } = body;
+      const newProduct = await prisma.products.create({
         data: {
           productName: body.productName,
           price: body.price,
@@ -72,7 +87,7 @@ class ProductController implements IController {
           description: body.description,
 
           categoryId: body.categoryId,
-          image: body.image,
+          images: images || undefined,
         },
       });
       return res.json({
@@ -87,7 +102,7 @@ class ProductController implements IController {
   public async put(req: Request, res: Response): Promise<Response> {
     try {
       const { params, body } = req;
-      const oldProduct:Product | null = await prisma.products.findUnique({
+      const oldProduct: any = await prisma.products.findUnique({
         where: { id: parseInt(params.id) },
       });
 
@@ -102,7 +117,7 @@ class ProductController implements IController {
           description: body.description || oldProduct!.description,
           status: body.status || oldProduct!.status,
           categoryId: body.categoryId || oldProduct!.categoryId,
-          image: body.imageUrl || oldProduct!.image,
+          images: body.imageUrl || oldProduct!.images,
         },
       });
 
@@ -125,6 +140,13 @@ class ProductController implements IController {
           status: false,
         },
       });
+      await prisma.imagesPaths.updateMany({
+        where: { productoId: parseInt(id) },
+        data: {
+          status: false,
+        },
+      });
+
       return res.status(204).json({
         msg: `Se elimino produccto el usuario con id${id}`,
       });
