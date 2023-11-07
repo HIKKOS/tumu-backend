@@ -16,10 +16,15 @@ class ProductController implements IController {
 
   public async getAll(req: Request, res: Response): Promise<Response> {
     const { limit = "5", page = "1" } = req.query;
-
+    const categoryId= req.params.id;
+    console.log(categoryId)
     try {
       const result = await prisma.products.findMany({
-        where: { status: true },
+        where: { 
+          status: true,
+          categoryId: categoryId ? parseInt(categoryId) : undefined
+
+        },
         skip: Number(page) - 1,
         take: Number(limit),
         include: {
@@ -44,7 +49,10 @@ class ProductController implements IController {
       });
 
       const count: number = await prisma.products.count({
-        where: { status: true },
+        where: { 
+          status: true,
+          categoryId: categoryId ? parseInt(categoryId) : undefined
+        },
       });
 
       return res.json({ count, products });

@@ -12,6 +12,11 @@ router.get(
   [validatePagination, validateFields],
   productsController.getAll
 );
+router.get(
+  "/category/:id",
+  [validatePagination, validateFields],
+  productsController.getAll
+);
 
 router.get(
   "/:id",
