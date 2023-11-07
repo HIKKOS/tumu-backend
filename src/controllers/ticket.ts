@@ -31,17 +31,24 @@ class TicketController implements IController {
 
   public async getAll(req: Request, res: Response): Promise<Response> {
     const { limit = "5", page = "1" } = req.query;
+    const userId= parseInt(req.params.id)
 
     try {
       const ticket: Ticket[] = await prisma.tickets.findMany({
-        where: { status: true },
+        where: {
+           status: true,
+           userId:userId
+        },
         skip: Number(page) - 1,
         take: Number(limit),
         select,
       });
 
       const count: number = await prisma.tickets.count({
-        where: { status: true },
+        where: { 
+          status: true,
+          userId:userId
+         },
       });
 
       return res.json({ count, ticket });

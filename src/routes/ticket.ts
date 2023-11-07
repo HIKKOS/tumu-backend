@@ -8,7 +8,7 @@ import { existTicket } from "../utils/dbValidator";
 
 const router =  Express.Router();
 
-router.get('/',
+router.get('/:id',
     [validatePagination,validateFields],
     ticketController.getAll
 );
