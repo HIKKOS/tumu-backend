@@ -24,12 +24,14 @@ class BuyController {
                 const { userId, products } = req.body;
 
                 let precioTotal: number= 0;
+                let amountTotal: number= 0;
 
                 for(const product of products){
                     const {amount, price, productId}= product;
                     console.log(amount)
 
                     precioTotal+=amount*price;
+                    amountTotal += amount;
 
                     await BuyController.getInstance().discountAmount(productId, amount,ts);
                 }
@@ -49,6 +51,7 @@ class BuyController {
                                 })),
                               },
                         },
+                        amountProducts: amountTotal,
                         total: precioTotal
 
                     }
@@ -62,7 +65,7 @@ class BuyController {
             return res.status(400).json({
                 code: 400,
                 msg: error.message || 'Ha ocurrido un error interno.',
-              });
+            });
         }
     }
 
