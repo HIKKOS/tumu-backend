@@ -59,8 +59,8 @@ class BuyController {
                 msg: 'Solicitud procesada correctamente.',
               });
         } catch (error:any) {
-            return res.status(500).json({
-                code: 500,
+            return res.status(400).json({
+                code: 400,
                 msg: error.message || 'Ha ocurrido un error interno.',
               });
         }
@@ -81,7 +81,7 @@ class BuyController {
             const {stock}= product;
 
             if(stock ==0 || cantidad > stock){
-                throw new Error(`product ${productId} no disponible`);
+                throw new Error(`producto con Id ${productId} sin stock`);
             }
     
             const newStock = stock - cantidad;

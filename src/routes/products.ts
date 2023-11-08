@@ -2,7 +2,7 @@ import Express from "express";
 import productsController from "../controllers/products";
 import { check } from "express-validator";
 import { validateFields, validatePagination } from "../middlewares/index";
-import { existProduct } from "../utils/dbValidator";
+import { existCategory, existProduct } from "../utils/dbValidator";
 import { validateAdminRole } from "../middlewares/validateRole";
 
 const router = Express.Router();
@@ -14,7 +14,11 @@ router.get(
 );
 router.get(
   "/category/:id",
-  [validatePagination, validateFields],
+  [
+    check("id").custom(existCategory),
+    validatePagination,
+     validateFields
+  ],
   productsController.getAll
 );
 
