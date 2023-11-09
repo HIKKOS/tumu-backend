@@ -1,6 +1,7 @@
-import { Prisma, ProductTicket } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "../services/prisma_client";
 import { Response, Request } from "express";
+
 
 
 class BuyController {
@@ -26,14 +27,32 @@ class BuyController {
                 let precioTotal: number= 0;
                 let amountTotal: number= 0;
 
-                for(const product of products){
-                    const {amount, price, productId}= product;
-                    console.log(amount)
+                const productData = []
 
-                    precioTotal+=amount*price;
+                for (const product of products) {
+                    const { amount, price, productId } = product;
+        
+                    const image = await ts.imagesPaths.findFirst({
+                        where: {
+                            productoId: productId,
+                            status: true
+                        }
+                    });
+                    
+                    const imagePath = image?.path ? image.path : "empty";
+
+                    precioTotal += amount * price;
                     amountTotal += amount;
-
+                    
                     await BuyController.getInstance().discountAmount(productId, amount,ts);
+
+                    productData.push({
+                        productId: productId,
+                        productName: product.productName,
+                        amount: amount,
+                        price: price,
+                        images: imagePath
+                    });
                 }
 
                 await ts.tickets.create({
@@ -43,12 +62,7 @@ class BuyController {
                         status:true,
                         products: {
                             createMany: {
-                                data: products.map((product: ProductTicket) => ({
-                                  productId: product.productId,
-                                  productName: product.productName,
-                                  amount: product.amount,
-                                  price: product.price,
-                                })),
+                                data: productData
                               },
                         },
                         amountProducts: amountTotal,
@@ -71,24 +85,15 @@ class BuyController {
 
     public async discountAmount(productId: number, cantidad: number, ts: Prisma.TransactionClient){
         try {
-            const product: any = await prisma.products.findUnique({
+            const product = await ts.products.findUnique({
                 where: {
                     id: productId,
                 },
             });
-            
-            if (!product) {
-                throw new Error("Producto no encontrado");
-            }
-
-            const {stock}= product;
-
-            if(stock ==0 || cantidad > stock){
-                throw new Error(`producto con Id ${productId} sin stock`);
-            }
-    
-            const newStock = stock - cantidad;
-    
+            const {stock}= product!;
+            console.log(stock)
+            const newStock: number = stock - cantidad;
+            console.log(newStock)
             await ts.products.update({
                 where: {
                     id: productId,
@@ -97,8 +102,8 @@ class BuyController {
                     stock: newStock
                 }
             });
-        } catch (error) {
-        
+        } catch (error:any) {
+            console.log(error)
             throw error;
         }
     }

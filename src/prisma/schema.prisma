@@ -55,6 +55,7 @@ model ProductTicket {
   productName  String   @db.VarChar(75)
   amount       Int
   price        Int
+  images       String
   Tickets      Tickets? @relation(fields: [ticketsFolio], references: [folio])
   ticketsFolio Int?
 }

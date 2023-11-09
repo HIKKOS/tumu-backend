@@ -4,4 +4,5 @@ export interface ProductsTicket{
     productName:string;
     amount:number;
     price:number;
+    images:string;
 }
