@@ -6,6 +6,7 @@ import { Ticket } from "../@types/ticket";
 const select = {
   folio: true,
   userId: true,
+  amountProducts:true,
   total: true,
   createdAt: true,
   status: false,
@@ -79,6 +80,7 @@ class TicketController implements IController {
         data: {
           userId: body.userId,
           total: body.total,
+          amountProducts: body.amountProducts,
           createdAt: body.createAt,
           status: body.status,
         },

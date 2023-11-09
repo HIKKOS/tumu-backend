@@ -50,23 +50,25 @@ model Products {
 }
 
 model ProductTicket {
-  id Int @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   productId    Int
   productName  String   @db.VarChar(75)
-  amount    Int
+  amount       Int
   price        Int
+  images       String
   Tickets      Tickets? @relation(fields: [ticketsFolio], references: [folio])
   ticketsFolio Int?
 }
 
 model Tickets {
-  folio     Int             @id @default(autoincrement())
-  userId    Int
-  products  ProductTicket[]
-  total     Decimal         @db.Decimal(10, 2)
-  createdAt DateTime        @default(now()) @db.Timestamp(6)
-  status    Boolean         @default(true)
-  user      Users           @relation(fields: [userId], references: [id])
+  folio         Int             @id @default(autoincrement())
+  userId        Int
+  products      ProductTicket[]
+  amountProducts Int
+  total         Decimal         @db.Decimal(10, 2)
+  createdAt     DateTime        @default(now()) @db.Timestamp(6)
+  status        Boolean         @default(true)
+  user          Users           @relation(fields: [userId], references: [id])
 }
 
 model ImagesPaths {
