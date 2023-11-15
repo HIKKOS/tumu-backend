@@ -15,7 +15,7 @@ const select = {
 };
 
 class TicketController implements IController {
-  static #intance: TicketController;
+  static #instance: TicketController;
 
   /**
    *
@@ -23,11 +23,11 @@ class TicketController implements IController {
   constructor() {}
 
   public static getInstance(): TicketController {
-    if (!TicketController.#intance) {
-      TicketController.#intance = new TicketController();
+    if (!TicketController.#instance) {
+      TicketController.#instance = new TicketController();
     }
 
-    return TicketController.#intance;
+    return TicketController.#instance;
   }
 
   public async getAll(req: Request, res: Response): Promise<Response> {

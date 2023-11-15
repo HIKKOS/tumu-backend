@@ -91,9 +91,7 @@ class BuyController {
                 },
             });
             const {stock}= product!;
-            console.log(stock)
             const newStock: number = stock - cantidad;
-            console.log(newStock)
             await ts.products.update({
                 where: {
                     id: productId,
