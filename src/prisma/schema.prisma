@@ -55,20 +55,20 @@ model ProductTicket {
   productName  String   @db.VarChar(75)
   amount       Int
   price        Int
-  images       String
+  images       String?
   Tickets      Tickets? @relation(fields: [ticketsFolio], references: [folio])
   ticketsFolio Int?
 }
 
 model Tickets {
-  folio         Int             @id @default(autoincrement())
-  userId        Int
-  products      ProductTicket[]
+  folio          Int             @id @default(autoincrement())
+  userId         Int
+  products       ProductTicket[]
   amountProducts Int
-  total         Decimal         @db.Decimal(10, 2)
-  createdAt     DateTime        @default(now()) @db.Timestamp(6)
-  status        Boolean         @default(true)
-  user          Users           @relation(fields: [userId], references: [id])
+  total          Decimal         @db.Decimal(10, 2)
+  createdAt      DateTime        @default(now()) @db.Timestamp(6)
+  status         Boolean         @default(true)
+  user           Users           @relation(fields: [userId], references: [id])
 }
 
 model ImagesPaths {
