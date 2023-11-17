@@ -38,11 +38,11 @@ export const existEmail = async (email: string): Promise<boolean> => {
 };
 
 /**checks if the phone number exist */
-export const existPhone = async (phone: string): Promise<boolean> => {
+export const existPhone = async (phone: number): Promise<boolean> => {
   console.log(phone);
   const user = await prisma.users.findFirst({
     where: {
-      phone: phone,
+    phone: phone.toString(),
       AND: {
         status: true,
       },

@@ -26,7 +26,7 @@ class UserController implements IController {
   }
 
   public async post(req: Request, res: Response): Promise<Response> {
-    try {
+     try { 
       const { body } = req;
 
       const newUser: User = await prisma.users.create({
@@ -35,16 +35,16 @@ class UserController implements IController {
           firstName: body.firstName,
           lastName: body.lastName,
           userPassword: Encrypter.encryptPassword(body.userPassword),
-          phone: body.phone,
+          phone: body.phone.toString(),
         },
       });
       return res.json({
         msg: `Se creo el usuario ${newUser.firstName} con id ${newUser.id}`,
       });
-    } catch (error: any) {
+     } catch (error: any) {
       console.log(error);
       return res.status(500).json({ code: 500, msg: error });
-    }
+    } 
   }
   public async get(req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id);
