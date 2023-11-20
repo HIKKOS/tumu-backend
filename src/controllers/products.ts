@@ -37,13 +37,13 @@ class ProductController implements IController {
           },
         },
       });
-      const fullUrl = req.protocol + "://" + req.get("host");
+  
       const products: Product[] = result.map((product) => {
         return {
           ...product,
           images: product.images.map(
             (image) =>
-              `${fullUrl}/api/uploads/products/${product.id}/${image.path}`
+              image.path
           ),
         };
       });

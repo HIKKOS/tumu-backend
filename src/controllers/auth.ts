@@ -33,6 +33,7 @@ class AuthController {
         const jwt = await generateJWT(user!.id, user!.role.rolName);
         return res.json({
           code: 200,
+          user,
           jwt,
         });
       } catch (error) {
