@@ -45,6 +45,8 @@ class TicketController implements IController {
         select,
       });
 
+      ticket.reverse();
+
       const count: number = await prisma.tickets.count({
         where: { 
           status: true,
