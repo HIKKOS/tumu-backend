@@ -5,6 +5,7 @@ import { ProductsTicket } from "./productsTicket";
 export interface Ticket{
     folio:number;
     userId:number;
+    amountProducts:number;
     total:Decimal;
     createdAt:Date;
     status:boolean;

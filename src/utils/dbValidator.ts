@@ -1,6 +1,10 @@
+
+import { ProductsTicket } from "../@types/productsTicket";
 import { Ticket } from "../@types/ticket";
 import prisma from "../services/prisma_client";
 import { Entities } from "./enums";
+
+
 
 export const existEntity = async (
   id: number,
@@ -34,11 +38,11 @@ export const existEmail = async (email: string): Promise<boolean> => {
 };
 
 /**checks if the phone number exist */
-export const existPhone = async (phone: string): Promise<boolean> => {
+export const existPhone = async (phone: number): Promise<boolean> => {
   console.log(phone);
   const user = await prisma.users.findFirst({
     where: {
-      phone: phone,
+    phone: phone.toString(),
       AND: {
         status: true,
       },
@@ -137,6 +141,34 @@ export const existProduct = async (id: number): Promise<boolean> => {
   }
   return true;
 };
+
+export const existStock= async (products: ProductsTicket[]): Promise<boolean> =>{
+
+  for (const product of products) {
+    
+    const { productId, amount }= product;
+
+    if(isNaN(productId)){
+      throw new Error(`el id debe ser numerico`)
+    }
+
+    const findProduct = await prisma.products.findUnique({
+      where: { id:Number(productId)}
+    });
+
+    if (!findProduct) {
+      throw new Error("Producto no encontrado");
+    }
+
+    const {stock}= findProduct;
+
+    if(stock ==0 || amount > stock){
+        throw new Error(`producto con Id ${productId} sin stock suficiente`);
+    }
+  }
+
+  return true;
+}
 
 export const existTicket = async (id: number): Promise<boolean> => {
   if (isNaN(id)) {

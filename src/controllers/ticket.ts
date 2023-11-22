@@ -6,6 +6,7 @@ import { Ticket } from "../@types/ticket";
 const select = {
   folio: true,
   userId: true,
+  amountProducts:true,
   total: true,
   createdAt: true,
   status: false,
@@ -14,7 +15,7 @@ const select = {
 };
 
 class TicketController implements IController {
-  static #intance: TicketController;
+  static #instance: TicketController;
 
   /**
    *
@@ -22,26 +23,35 @@ class TicketController implements IController {
   constructor() {}
 
   public static getInstance(): TicketController {
-    if (!TicketController.#intance) {
-      TicketController.#intance = new TicketController();
+    if (!TicketController.#instance) {
+      TicketController.#instance = new TicketController();
     }
 
-    return TicketController.#intance;
+    return TicketController.#instance;
   }
 
   public async getAll(req: Request, res: Response): Promise<Response> {
     const { limit = "5", page = "1" } = req.query;
+    const userId= parseInt(req.params.id)
 
     try {
       const ticket: Ticket[] = await prisma.tickets.findMany({
-        where: { status: true },
+        where: {
+           status: true,
+           userId:userId
+        },
         skip: Number(page) - 1,
         take: Number(limit),
         select,
       });
 
+      ticket.reverse();
+
       const count: number = await prisma.tickets.count({
-        where: { status: true },
+        where: { 
+          status: true,
+          userId:userId
+         },
       });
 
       return res.json({ count, ticket });
@@ -72,6 +82,7 @@ class TicketController implements IController {
         data: {
           userId: body.userId,
           total: body.total,
+          amountProducts: body.amountProducts,
           createdAt: body.createAt,
           status: body.status,
         },

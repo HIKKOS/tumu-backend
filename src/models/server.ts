@@ -13,6 +13,7 @@ export default class Server {
     auth: "/api/login",
     uploads: "/api/uploads",
     buy: "/api/buy",
+    history: "/api/history",
   };
   constructor() {
     this.#app = express();
@@ -43,6 +44,7 @@ export default class Server {
     this.#app.use(this.#paths.products, require("../routes/products"));
     this.#app.use(this.#paths.tickets, require("../routes/ticket"));
     this.#app.use(this.#paths.buy,require("../routes/buy"));
+    this.#app.use(this.#paths.history,require("../routes/history"));
   }
   listen() {
     this.#app.listen(this.#port, () => {

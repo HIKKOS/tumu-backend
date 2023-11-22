@@ -2,14 +2,18 @@ import Express from "express";
 import ticketController from "../controllers/ticket";
 import { check } from "express-validator";
 import { validateFields, validatePagination } from "../middlewares/index";
-import { existTicket } from "../utils/dbValidator";
+import { existTicket, existUserId } from "../utils/dbValidator";
 
 
 
 const router =  Express.Router();
 
-router.get('/',
-    [validatePagination,validateFields],
+router.get('/user/:id',
+    [
+        validatePagination,
+        validateFields,
+        check("id").custom(existUserId)
+    ],
     ticketController.getAll
 );
 
