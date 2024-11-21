@@ -1,13 +1,12 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 
-export async function generateJWT(id: number, role: string) {
+export async function generateJWT(id: number) {
   const salt = bcryptjs.genSaltSync(10);
   const promise = new Promise((resolve, reject) => {
-    console.log({ role: role });
-    role = bcryptjs.hashSync(role, salt);
-    console.log({ hashed: role });
-    const payload = { id, role };
+    const hash   = bcryptjs.hashSync(`${id}`, salt);
+ 
+    const payload = {  hash };
     jwt.sign(
       payload,
       process.env.SECRETORPRIVATEKEY!,

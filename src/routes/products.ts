@@ -1,53 +1,17 @@
 import Express from "express";
-import productsController from "../controllers/products";
-import { check } from "express-validator";
-import { validateFields, validatePagination } from "../middlewares/index";
-import { existCategory, existProduct } from "../utils/dbValidator";
-import { validateAdminRole } from "../middlewares/validateRole";
+import { ProductController } from "../controllers/product";
+
 
 const router = Express.Router();
-
+const controller = new ProductController();
 router.get(
   "/",
-  [validatePagination, validateFields],
-  productsController.getAll
-);
-router.get(
-  "/category/:id",
-  [
-    check("id").custom(existCategory),
-    validatePagination,
-     validateFields
-  ],
-  productsController.getAll
-);
 
-router.get(
-  "/:id",
-  [check("id").custom(existProduct), validateAdminRole, validateFields],
-  productsController.get
+  controller.getAll
 );
-
 router.post(
   "/",
-  [check("productName").notEmpty(), validateFields],
-  productsController.post
-);
 
-router.put(
-  "/:id",
-  [
-    check("id").custom(existProduct),
-    check("productName").notEmpty(),
-    validateFields,
-  ],
-  productsController.put
+  controller.post
 );
-
-router.delete(
-  "/:id",
-  [check("id").custom(existProduct)],
-  productsController.delete
-);
-
 module.exports = router;

@@ -6,77 +6,23 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-model Roles {
-  id      Int     @id @default(autoincrement())
-  rolName String  @db.VarChar(75)
-  status  Boolean @default(true)
-  Users   Users[]
-}
-
-model Categories {
-  id           Int        @id @default(autoincrement())
-  categoryName String     @db.VarChar(75)
-  status       Boolean    @default(true)
-  products     Products[]
-}
-
 model Users {
-  id           Int       @id @default(autoincrement())
-  firstName    String    @db.VarChar(75)
-  lastName     String    @db.VarChar(75)
-  email        String    @unique @db.VarChar(255)
-  userPassword String    @db.VarChar(255)
-  phone        String    @unique @db.VarChar(20)
-  status       Boolean   @default(true)
-  tickets      Tickets[]
-  rolId        Int       @default(2)
-  role         Roles     @relation(fields: [rolId], references: [id])
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String
+  userPassword String
 }
 
 model Products {
-  id          Int           @id @default(autoincrement())
-  productName String        @db.VarChar(75)
-  price       Decimal       @db.Decimal(10, 2)
-  stock       Int           @default(0) @db.Int
-  categoryId  Int
-  description String?       @db.VarChar(255)
-  status      Boolean       @default(true)
-  images      ImagesPaths[]
-  category    Categories    @relation(fields: [categoryId], references: [id])
-}
-
-model ProductTicket {
-  id           Int      @id @default(autoincrement())
-  productId    Int
-  productName  String   @db.VarChar(75)
-  amount       Int
-  price        Int
-  images       String?
-  Tickets      Tickets? @relation(fields: [ticketsFolio], references: [folio])
-  ticketsFolio Int?
-}
-
-model Tickets {
-  folio          Int             @id @default(autoincrement())
-  userId         Int
-  products       ProductTicket[]
-  amountProducts Int
-  total          Decimal         @db.Decimal(10, 2)
-  createdAt      DateTime        @default(now()) @db.Timestamp(6)
-  status         Boolean         @default(true)
-  user           Users           @relation(fields: [userId], references: [id])
-}
-
-model ImagesPaths {
-  id         Int      @id @default(autoincrement())
-  productoId Int
-  path       String
-  producto   Products @relation(fields: [productoId], references: [id], map: "ImgPaths_ServicioId_fkey")
-  status     Boolean  @default(true)
-
-  @@index([productoId], map: "ImgPaths_ServicioId_fkey")
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  price       Float
+  stock       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

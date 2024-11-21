@@ -1,23 +1,19 @@
 import express from "express";
 import morgan from "morgan";
+import fileUpload from "express-fileupload";
 import cors from "cors";
 import "dotenv/config";
 export default class Server {
   #app: express.Application;
   #port: string | undefined;
   #paths = {
-    users: "/api/users",
-    categories: "/api/categories",
+    auth: "/api/auth",
     products: "/api/products",
-    tickets: "/api/ticket",
-    auth: "/api/login",
-    uploads: "/api/uploads",
-    buy: "/api/buy",
-    history: "/api/history",
   };
   constructor() {
     this.#app = express();
     this.#app.use(express.json());
+    this.#app.use(fileUpload());
     this.#app.use(morgan("dev"));
     this.#port = process.env.PORT;
     //Middlewares
@@ -38,13 +34,7 @@ export default class Server {
   }
   routes() {
     this.#app.use(this.#paths.auth, require("../routes/auth"));
-    this.#app.use(this.#paths.uploads, require("../routes/uploads"));
-    this.#app.use(this.#paths.users, require("../routes/user"));
-    this.#app.use(this.#paths.categories, require("../routes/categories"));
     this.#app.use(this.#paths.products, require("../routes/products"));
-    this.#app.use(this.#paths.tickets, require("../routes/ticket"));
-    this.#app.use(this.#paths.buy,require("../routes/buy"));
-    this.#app.use(this.#paths.history,require("../routes/history"));
   }
   listen() {
     this.#app.listen(this.#port, () => {
